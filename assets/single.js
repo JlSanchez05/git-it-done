@@ -1,6 +1,7 @@
 let issuesContainerEl = document.querySelector('#issues-container')
 let limitWarningEl = document.querySelector('#limit-warning')
 
+let repoNameEl = document.querySelectorAll('#repo-name')
 
 
 let displayWarning = function(repo){
@@ -15,8 +16,28 @@ let displayWarning = function(repo){
     limitWarningEl.appendChild(linkEl);
 }
 
+let getRepoName = function(){
+// grab repo name from url string
+let queryString = document.location.search
+let repoName = queryString.split('=')[1]
+
+    if(repoName){
+        repoNameEl.textContent = repoName
+        getRepoIssues(repoName)
+    } else{
+        document.location.replace('/index.html')
+    }
+//if no repo was given, redirect to the homepage
+getRepoIssues(repoName)
+repoName.textContent = repoName
+console.log(repoName)
+
+
+}
+
 let getRepoIssues = function(repo){
     let apiUrl = 'https://api.github.com/repos/' + repo + '/issues?direction=asc'
+    // make a get request to url
 fetch(apiUrl).then(function(response){
     //request was successful
     if(response.ok){
@@ -24,17 +45,18 @@ fetch(apiUrl).then(function(response){
         //pass response data to dom function    
             displayIssues(data)
 
+            // check if api has paginated issues
             if(response.headers.get('Link')){
                 displayWarning(repo)
             }
         })
     }
     else{
-        alert('There was a problem with your request!')
+        document.location.replace('/index.html')
     }
 })
 
-    console.log(repo)
+  
 }
 let displayIssues = function(issues){
 
@@ -73,8 +95,9 @@ issuesContainerEl.appendChild(issueEl)
 
 
 }
+getRepoName()
 
-getRepoIssues('facebook/react')
+//getRepoIssues('facebook/react')
 
 
 
