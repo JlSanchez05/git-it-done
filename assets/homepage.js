@@ -8,7 +8,6 @@ let repoSearchTerm = document.querySelector("#repo-search-term");
 
 
 
-
 let formSubmitHandler = function(event){
     event.preventDefault()
 let userName = nameInputEl.value.trim()
@@ -75,6 +74,20 @@ repoEl.appendChild(statusEl);
     
 }
 
+let getFeatureRepos = function(language){
+  let apiUrl = 'https://api.github.com/search/repositories?q=" + language + "+is:featured&sort=help-wanted-issues'
+  fetch(apiUrl).then(function(response){
+if(response.ok){
+  response.json().then(function(data){
+    displayRepos(data.items, language)
+  })
+}else{
+  alert('Eroor: GitHub User Not Found')
+}
+  })
+  }
+ 
+getFeatureRepos()
 
 
 
